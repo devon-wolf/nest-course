@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoffeesModule } from './coffees/coffees.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoffeeRatingModule } from './coffee-rating/coffee-rating.module';
 
 @Module({
   imports: [
@@ -15,9 +16,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: 'pass123',
       database: 'postgres',
       autoLoadEntities: true,
-      // note: do not synchronize on prod; it will generate tables from @Entity classes
+      // note: do not synchronize on prod; it will generate tables from @Entity classes; also note, synchronizing makes migrations werid
       synchronize: true,
     }),
+    CoffeeRatingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
