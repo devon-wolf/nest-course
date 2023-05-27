@@ -15,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: 'pass123',
       database: 'postgres',
       autoLoadEntities: true,
-      // note: do not synchronize on prod
+      // note: do not synchronize on prod; it will generate tables from @Entity classes
       synchronize: true,
     }),
   ],
