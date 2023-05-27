@@ -5,6 +5,7 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Flavor } from './entities/flavor.entity';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 class CoffeeNotFoundException extends NotFoundException {
   constructor(id) {
@@ -20,11 +21,14 @@ export class CoffeesService {
     private readonly flavorRepository: Repository<Flavor>,
   ) {}
 
-  findAll() {
+  findAll(paginationQuery: PaginationQueryDto) {
+    const { limit, offset } = paginationQuery;
     return this.coffeeRepository.find({
       relations: {
         flavors: true,
       },
+      skip: offset,
+      take: limit,
     });
   }
 
