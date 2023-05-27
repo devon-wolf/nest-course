@@ -22,8 +22,9 @@ export class CoffeesController {
   }
 
   @Get()
-  findAll(@Query() paginationQuery: { limit: number; offset: number }) {
+  findAll(@Query() paginationQuery: { limit: string; offset: string }) {
     const { limit, offset } = paginationQuery;
+    console.log(typeof limit, typeof offset);
     return this.coffeesService.findAll();
   }
 
