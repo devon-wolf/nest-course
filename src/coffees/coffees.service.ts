@@ -14,7 +14,7 @@ export class CoffeesService {
     return this.coffees;
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     const coffee = this.coffees.find((item) => item.id === +id);
     if (!coffee) {
       throw new NotFoundException(`Coffee #${id} not found`);
@@ -28,7 +28,7 @@ export class CoffeesService {
     return createCoffeeDto;
   }
 
-  update(id: string, updateCoffeeDto: UpdateCoffeeDto) {
+  update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
     const existingCoffeeIdx = this.coffees.findIndex((item) => item.id === +id);
     if (existingCoffeeIdx >= 0) {
       this.coffees[existingCoffeeIdx] = {
@@ -38,7 +38,7 @@ export class CoffeesService {
     }
   }
 
-  remove(id: string) {
+  remove(id: number) {
     const coffeeIdx = this.coffees.findIndex((item) => item.id === +id);
     if (coffeeIdx >= 0) {
       this.coffees.splice(coffeeIdx, 1);
