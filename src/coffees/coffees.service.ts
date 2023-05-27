@@ -28,9 +28,12 @@ export class CoffeesService {
   }
 
   update(id: string, updateCoffeeDto: UpdateCoffeeDto) {
-    const existingCoffee = this.findOne(id);
-    if (existingCoffee) {
-      console.log('UPDATE THE COFFEE');
+    const existingCoffeeIdx = this.coffees.findIndex((item) => item.id === +id);
+    if (existingCoffeeIdx >= 0) {
+      this.coffees[existingCoffeeIdx] = {
+        ...this.coffees[existingCoffeeIdx],
+        ...updateCoffeeDto,
+      };
     }
   }
 
