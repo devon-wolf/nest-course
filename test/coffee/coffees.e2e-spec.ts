@@ -12,7 +12,30 @@ describe('Feature: Coffees - /coffees', () => {
     flavors: ['testy', 'fake'],
   };
 
+  const updatedCoffeeFixture = {
+    ...coffeeFixture,
+    name: 'New Name',
+  };
+
+  const expectedCoffee = expect.objectContaining({
+    ...coffeeFixture,
+    flavors: expect.arrayContaining(
+      coffeeFixture.flavors.map((name) => expect.objectContaining({ name })),
+    ),
+  });
+
+  const updatedExpectedCoffee = expect.objectContaining({
+    ...updatedCoffeeFixture,
+    flavors: expect.arrayContaining(
+      updatedCoffeeFixture.flavors.map((name) =>
+        expect.objectContaining({ name }),
+      ),
+    ),
+  });
+
   let app: INestApplication;
+  let httpServer: any;
+  let coffeeId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -32,6 +55,7 @@ describe('Feature: Coffees - /coffees', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    httpServer = app.getHttpServer();
 
     app.useGlobalPipes(
       new ValidationPipe({
@@ -48,27 +72,53 @@ describe('Feature: Coffees - /coffees', () => {
   });
 
   test('Create [POST /]', () => {
-    return request(app.getHttpServer())
+    return request(httpServer)
       .post('/coffees')
       .send(<CreateCoffeeDto>coffeeFixture)
       .expect(HttpStatus.CREATED)
       .then(({ body }) => {
-        const expected = expect.objectContaining({
-          ...coffeeFixture,
-          flavors: expect.arrayContaining(
-            coffeeFixture.flavors.map((name) =>
-              expect.objectContaining({ name }),
-            ),
-          ),
-        });
-        expect(body).toEqual(expected);
+        coffeeId = body.id;
+        expect(body).toEqual(expectedCoffee);
       });
   });
 
-  test.todo('Get all [GET /]');
-  test.todo('Get one [GET /:id]');
-  test.todo('Update one [PATCH /:id]');
-  test.todo('Delete one [DELETE /:id]');
+  test('Get all [GET /]', () => {
+    return request(httpServer)
+      .get('/coffees')
+      .expect(HttpStatus.OK)
+      .then(({ body }) => {
+        expect(body).toEqual([expectedCoffee]);
+      });
+  });
+
+  test('Get one [GET /:id]', () => {
+    return request(httpServer)
+      .get(`/coffees/${coffeeId}`)
+      .expect(HttpStatus.OK)
+      .then(({ body }) => {
+        expect(body).toEqual(expectedCoffee);
+      });
+  });
+
+  // TODO: update this test as the service updates to be more of a real patch
+  test('Update one [PATCH /:id]', () => {
+    return request(httpServer)
+      .patch(`/coffees/${coffeeId}`)
+      .send(updatedCoffeeFixture)
+      .expect(HttpStatus.OK)
+      .then(({ body }) => {
+        expect(body).toEqual(updatedExpectedCoffee);
+      });
+  });
+
+  test('Delete one [DELETE /:id]', () => {
+    return request(httpServer)
+      .delete(`/coffees/${coffeeId}`)
+      .expect(HttpStatus.OK)
+      .then(({ body }) => {
+        expect(body).toEqual(updatedExpectedCoffee);
+      });
+  });
 
   afterAll(async () => {
     await app.close();

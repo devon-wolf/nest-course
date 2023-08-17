@@ -62,6 +62,7 @@ export class CoffeesService {
     return this.coffeeRepository.save(coffee);
   }
 
+  // TODO: per the e2e test, this is really a put route, it's replacing the whole object with what is sent rather than patching whatever fields are sent; or it may just be a problem with the flavors; either way, fix it
   async update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
     const flavors =
       updateCoffeeDto.flavors &&
