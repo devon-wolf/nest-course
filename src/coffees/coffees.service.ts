@@ -59,7 +59,7 @@ export class CoffeesService {
       ...createCoffeeDto,
       flavors,
     });
-    this.coffeeRepository.save(coffee);
+    return this.coffeeRepository.save(coffee);
   }
 
   async update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
