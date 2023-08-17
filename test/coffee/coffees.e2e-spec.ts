@@ -71,53 +71,46 @@ describe('Feature: Coffees - /coffees', () => {
     await app.init();
   });
 
-  test('Create [POST /]', () => {
-    return request(httpServer)
+  test('Create [POST /]', async () => {
+    const response = await request(httpServer)
       .post('/coffees')
-      .send(<CreateCoffeeDto>coffeeFixture)
-      .expect(HttpStatus.CREATED)
-      .then(({ body }) => {
-        coffeeId = body.id;
-        expect(body).toEqual(expectedCoffee);
-      });
+      .send(<CreateCoffeeDto>coffeeFixture);
+
+    coffeeId = response.body.id;
+
+    expect(response.status).toBe(HttpStatus.CREATED);
+    expect(response.body).toEqual(expectedCoffee);
   });
 
-  test('Get all [GET /]', () => {
-    return request(httpServer)
-      .get('/coffees')
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(body).toEqual([expectedCoffee]);
-      });
+  test('Get all [GET /]', async () => {
+    const response = await request(httpServer).get('/coffees');
+
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toEqual([expectedCoffee]);
   });
 
-  test('Get one [GET /:id]', () => {
-    return request(httpServer)
-      .get(`/coffees/${coffeeId}`)
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(body).toEqual(expectedCoffee);
-      });
+  test('Get one [GET /:id]', async () => {
+    const response = await request(httpServer).get(`/coffees/${coffeeId}`);
+
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toEqual(expectedCoffee);
   });
 
   // TODO: update this test as the service updates to be more of a real patch
-  test('Update one [PATCH /:id]', () => {
-    return request(httpServer)
+  test('Update one [PATCH /:id]', async () => {
+    const response = await request(httpServer)
       .patch(`/coffees/${coffeeId}`)
-      .send(updatedCoffeeFixture)
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(body).toEqual(updatedExpectedCoffee);
-      });
+      .send(updatedCoffeeFixture);
+
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toEqual(updatedExpectedCoffee);
   });
 
-  test('Delete one [DELETE /:id]', () => {
-    return request(httpServer)
-      .delete(`/coffees/${coffeeId}`)
-      .expect(HttpStatus.OK)
-      .then(({ body }) => {
-        expect(body).toEqual(updatedExpectedCoffee);
-      });
+  test('Delete one [DELETE /:id]', async () => {
+    const response = await request(httpServer).delete(`/coffees/${coffeeId}`);
+
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toEqual(updatedExpectedCoffee);
   });
 
   afterAll(async () => {
