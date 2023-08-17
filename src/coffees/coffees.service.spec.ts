@@ -5,6 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Flavor } from './entities/flavor.entity';
 import { Coffee } from './entities/coffee.entity';
 import { NotFoundException } from '@nestjs/common';
+import coffeesConfig from './config/coffees.config';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const createMockRepository = <T = any>(): MockRepository<T> => ({
@@ -28,6 +29,10 @@ describe('CoffeesService', () => {
         {
           provide: getRepositoryToken(Coffee),
           useValue: createMockRepository<Coffee>(),
+        },
+        {
+          provide: coffeesConfig.KEY,
+          useValue: {},
         },
       ],
     }).compile();
